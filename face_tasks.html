@@ -33,17 +33,21 @@
             border: 1px solid #505050;
             min-height: 200px;
             position: relative;
+
+            border-radius: 20px;
         }
 
         .box {
             color: black;
             background-color: #505050;
-            border: 1px solid #000;
+            border: 7px solid #ffffff;
             margin: 5px;
             padding: 10px;
             cursor: move;
             position: relative;
             transition: background-color 0.3s;
+
+            border-radius: 17px;
         }
 
         .box div {
@@ -146,8 +150,6 @@
                 Description:
                 <div contenteditable="true" data-placeholder="Description">${taskData ? taskData.description : ''}</div>
                 
-                <br>
-
                 <center>
                     <div class="button-container">
                         <select class="color-select">
@@ -203,7 +205,9 @@
 
         function changeBoxColor(select, box) {
             const selectedColor = select.value;
-            box.style.backgroundColor = selectedColor;
+            box.style.borderWidth = "7px"; // Set the border width
+            box.style.borderStyle = "solid"; // Set the border style
+            box.style.borderColor = selectedColor; // Set the border color
         }
 
         // Save and Load Tasks
