@@ -3,7 +3,7 @@
 # Face Tasks v1.0
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Lightweight asks saving app.
+Lightweight tasks saving app.
 
 </div>
 
