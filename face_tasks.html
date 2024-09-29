@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Tasks</title>
+    <link href="https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Shantell Sans";
+        }
+
+        body {
+            font-family: "Shantell Sans";
+            background-color: #121212; 
+        }
+
+        .main {
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+        }
+
+        .column {
+            width: 30%;
+            background-color: #6c6c6c; 
+            padding: 10px;
+            border: 1px solid #505050;
+            min-height: 200px;
+            position: relative;
+        }
+
+        .box {
+            color: black;
+            background-color: #505050;
+            border: 1px solid #000;
+            margin: 5px;
+            padding: 10px;
+            cursor: move;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .box div {
+            display: block;
+            background-color: #555; /* Light input background */
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            color: white;
+        }
+
+        .box div[contenteditable="true"]:empty:before {
+            content: attr(data-placeholder);
+            color: #888; /* Placeholder color */
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+
+        #addTaskBtn {
+            background-color: #695482; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            padding: 10px 15px; /* Padding */
+            font-size: 16px; /* Font size */
+            cursor: pointer; /* Pointer cursor */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out; /* Smooth transition */
+        }
+
+        #addTaskBtn:hover {
+            background-color: #8868af; /* Darker green on hover */
+            transform: scale(1.05) rotate(2deg); /* Slightly enlarge and rotate the button on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
+        }
+
+        .color-select {
+            margin-top: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            align-items: center; /* Align items vertically */
+        }
+
+        .color-select {
+            margin-right: 10px; /* Space between select and button */
+        }
+        
+    </style>
+</head>
+<body id="dropArea">
+
+    <center>
+        <button id="addTaskBtn">Add Task</button>
+    </center>
+    
+    <div class="container">
+        <div class="column" id="todo">
+            <div class="main"><center>TO DO</center></div>
+        </div>
+        <div class="column" id="in-progress">
+            <div class="main"><center>IN PROGRESS</center></div>
+        </div>
+        <div class="column" id="done">
+            <div class="main"><center>FINISHED</center></div>
+        </div>
+    </div>
+
+    <script>
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const columns = document.querySelectorAll('.column');
+
+        let tasks = [];
+        
+        const pastelColors = [
+            '#FFB3BA', // Pastel Pink
+            '#FFDFBA', // Pastel Orange
+            '#FFFFBA', // Pastel Yellow
+            '#BAFFC9', // Pastel Green
+            '#BAE1FF'  // Pastel Blue
+        ];
+
+        addTaskBtn.addEventListener('click', () => {
+            const box = createTaskBox();
+            appendBoxToColumn('todo', box);
+        });
+
+        function createTaskBox(taskData) {
+            const box = document.createElement('div');
+            box.className = 'box';
+            box.draggable = true;
+
+            box.innerHTML = `
+                Task:
+                <div contenteditable="true" data-placeholder="Task Name">${taskData ? taskData.name : ''}</div>
+                Person Responsible:
+                <div contenteditable="true" data-placeholder="Person Responsible">${taskData ? taskData.person : ''}</div>
+                Description:
+                <div contenteditable="true" data-placeholder="Description">${taskData ? taskData.description : ''}</div>
+                
+                <br>
+
+                <center>
+                    <div class="button-container">
+                        <select class="color-select">
+                            <option value="">Select a color</option>
+                            ${pastelColors.map(color => `<option style="background-color: ${color};" value="${color}">${color}</option>`).join('')}
+                        </select>
+
+                        <button class="removeTaskBtn">Remove Task</button>
+                    </div>
+                </center>
+            `;
+
+            // Attach the changeBoxColor event without inline handler
+            const colorSelect = box.querySelector('.color-select');
+            colorSelect.addEventListener('change', function() {
+                changeBoxColor(colorSelect, box); // Pass both select and box
+            });
+
+            box.querySelector('.removeTaskBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to remove this task?')) {
+                    box.remove();
+                }
+            });
+
+            box.addEventListener('dragstart', () => {
+                box.classList.add('dragging');
+            });
+
+            box.addEventListener('dragend', () => {
+                box.classList.remove('dragging');
+            });
+
+            columns.forEach(col => {
+                col.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+
+                col.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const draggedBox = document.querySelector('.dragging');
+                    if (col.id !== draggedBox.parentNode.id) {
+                        appendBoxToColumn(col.id, draggedBox);
+                    }
+                });
+            });
+
+            return box;
+        }
+
+        function appendBoxToColumn(columnId, box) {
+            document.getElementById(columnId).appendChild(box);
+        }
+
+        function changeBoxColor(select, box) {
+            const selectedColor = select.value;
+            box.style.backgroundColor = selectedColor;
+        }
+
+        // Save and Load Tasks
+
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveTasks();
+            }
+        });
+
+        function saveTasks() {
+            tasks = [];
+
+            const boxes = document.querySelectorAll('.box');
+
+            boxes.forEach(box => {
+                const name = box.querySelector('div[contenteditable="true"]').innerText;
+                const person = box.querySelectorAll('div[contenteditable="true"]')[1].innerText;
+                const description = box.querySelectorAll('div[contenteditable="true"]')[2].innerText;
+                const color = box.style.backgroundColor;
+                
+                tasks.push({ name, person, description, column: box.parentNode.id, color });
+            });
+
+            const blob = new Blob([JSON.stringify(tasks)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tasks.ftask';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // File Drop Handling
+        const dropArea = document.getElementById('dropArea');
+
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Prevent default behavior (Prevent file from being opened)
+
+        });
+
+        dropArea.addEventListener('dragleave', (e) => {
+
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith('.ftask')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const loadedTasks = JSON.parse(event.target.result);
+                        loadTasks(loadedTasks);
+                    };
+                    reader.readAsText(file);
+                } else {
+                    alert('Please drop a valid .ftask file.');
+                }
+            }
+        });
+
+        function loadTasks(loadedTasks) {
+            // Clear existing tasks
+            columns.forEach(col => {
+                col.querySelectorAll('.box').forEach(box => box.remove());
+            });
+
+            loadedTasks.forEach(task => {
+                const box = createTaskBox(task);
+                appendBoxToColumn(task.column, box);
+                changeBoxColor({ value: task.color }, box); // Set box color
+            });
+        }
+
+    </script>
+</body>
+</html>
