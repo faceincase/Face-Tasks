@@ -31,7 +31,7 @@ File format for Face Tasks is called `.ftask` and it's pretty small.
 # How to use?
 
 ## Use on github:
-**[Here](https://faceincase.github.io/Face-Notes/face_notes.html)** you can access the site.
+**[Here](https://faceincase.github.io/Face-Tasks/face_tasks.html)** you can access the site.
 <br>
 ## Use locally:
 Download `face_tasks.html` file
