@@ -1,12 +1,16 @@
 <div align="center">
   
-# Face Tasks v1.0
+# Face Tasks v1.1
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Lightweight tasks saving app.
 
 </div>
 
+# New version:
+![image](https://github.com/user-attachments/assets/9a9f34e6-2637-49f6-bb6d-87cec7c4d202)
+
+# Old version:
 ![image](https://github.com/user-attachments/assets/91021ca3-5df9-425c-8829-858e67cbcc50)
 
 https://github.com/user-attachments/assets/cd9a5204-6b60-4d93-a619-770ee5bc172c
