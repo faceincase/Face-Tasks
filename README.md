@@ -14,7 +14,7 @@ Lightweight tasks saving app.
 
 Simple Task Management app built on the HTML5 & CSS3.
 
-It's a tool designed to be easy and lightweight.
+It's a tool designed to be easy and lightweight, tasks are stored using `.ftask` format for compact size.
 
 There's some screenshots below, you can use it anywhere as `github.io` version or run it locally by downloading the `.HTML` file
 
@@ -42,7 +42,7 @@ Version 1.1             |
 ## Storage (`.ftask`)
 Store hundreds or even thousands of tasks, all within just a few megabytes.
 <br>
-File format for Face Tasks is called `.ftask` and it's pretty small.
+File format for Face Tasks is called `.ftask`.
 <br>
 
 ![image](https://github.com/user-attachments/assets/1c25186d-edf0-4d90-b28e-b7b949a262e1)
