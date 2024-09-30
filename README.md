@@ -1,6 +1,6 @@
 <div align="center">
   
-# Face Tasks v1.2
+# Face Tasks v1.3
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Lightweight tasks saving app.
@@ -29,29 +29,14 @@ There's some screenshots below, you can use it anywhere as `github.io` version o
 - Drag **`.ftask`** file to open saved notes.
 
 
-
-Version 1.2             | 
+Versions            | 
 :-------------------------:|
+Version 1.3             | 
+![image](https://github.com/user-attachments/assets/27d773de-78ac-4ebf-904a-e68eea6ddf36)
+Version 1.2             | 
 <img src="https://github.com/user-attachments/assets/9a9f34e6-2637-49f6-bb6d-87cec7c4d202">  |
 Version 1.1             | 
 <img src="https://github.com/user-attachments/assets/91021ca3-5df9-425c-8829-858e67cbcc50">  |
-
-
-# Version 1.2:
-![image](https://github.com/user-attachments/assets/9a9f34e6-2637-49f6-bb6d-87cec7c4d202)
-
-> RIGHT CLICK > Change colors, remove tasks or move them vertically.
-
-![image](https://github.com/user-attachments/assets/3c177f16-c065-434f-b2d7-740804014572)
-
-# Version 1.1:
-![image](https://github.com/user-attachments/assets/91021ca3-5df9-425c-8829-858e67cbcc50)
-
-https://github.com/user-attachments/assets/cd9a5204-6b60-4d93-a619-770ee5bc172c
-
-
-
-<br>
 
 
 ## Storage (`.ftask`)
