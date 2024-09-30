@@ -33,7 +33,6 @@
             border: 1px solid #505050;
             min-height: 200px;
             position: relative;
-
             border-radius: 20px;
         }
 
@@ -45,9 +44,28 @@
             padding: 10px;
             cursor: move;
             position: relative;
-            transition: background-color 0.3s;
-
+            transition: border 0.3s;
             border-radius: 17px;
+        }
+
+        .move-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px; /* Space between the buttons */
+        }
+
+        .move-buttons button {
+            background-color: #888;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+
+        }
+
+        .move-buttons button:hover {
+            background-color: #aaa;
         }
 
         .box div {
@@ -94,10 +112,42 @@
             align-items: center; /* Align items vertically */
         }
 
-        .color-select {
-            margin-right: 10px; /* Space between select and button */
+
+
+        .context-menu option {
+            color: black; /* Optional text color */
+            margin-bottom: 5px;
         }
-        
+
+        .color-select option:hover {
+            filter: brightness(70%); /* Darken the option by 30% */
+        }
+
+        /* Context Menu Styles */
+        .context-menu {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            z-index: 1000;
+            padding: 10px;
+        }
+
+        .context-menu button, select {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+            border-radius: 3px;
+            width: 100%;
+        }
+
+        .context-menu button:hover {
+            background-color: #777;
+        }
     </style>
 </head>
 <body id="dropArea">
@@ -105,25 +155,53 @@
     <center>
         <button id="addTaskBtn">Add Task</button>
     </center>
-    
+
     <div class="container">
+
         <div class="column" id="todo">
             <div class="main"><center>TO DO</center></div>
         </div>
+
         <div class="column" id="in-progress">
             <div class="main"><center>IN PROGRESS</center></div>
         </div>
+
         <div class="column" id="done">
             <div class="main"><center>FINISHED</center></div>
         </div>
+
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+
+        <select class="color-select" id="colorSelectContextMenu">
+            <option value="" selected disabled>Select a color...</option>
+            <option style="background-color: #FFB3BA;" value="#FFB3BA">Red</option>
+            <option style="background-color: #FFDFBA;" value="#FFDFBA">Orange</option>
+            <option style="background-color: #FFFFBA;" value="#FFFFBA">Yellow</option>
+            <option style="background-color: #BAFFC9;" value="#BAFFC9">Green</option>
+            <option style="background-color: #BAE1FF;" value="#BAE1FF">Blue</option> 
+        </select>
+
+        <button id="removeTaskBtnContext">Remove Task</button>
+
+        <div class="move-buttons">
+            <button id="move-up" class="move-up">Move Up</button>
+            <button id="move-down" class="move-down">Move Down</button>
+        </div>
+
     </div>
 
     <script>
         const addTaskBtn = document.getElementById('addTaskBtn');
         const columns = document.querySelectorAll('.column');
+        const contextMenu = document.getElementById('contextMenu');
+        const removeTaskBtnContext = document.getElementById('removeTaskBtnContext');
+        const colorSelectContextMenu = document.getElementById('colorSelectContextMenu');
 
         let tasks = [];
-        
+        let selectedBox = null; // To track the right-clicked task
+
         const pastelColors = [
             '#FFB3BA', // Pastel Pink
             '#FFDFBA', // Pastel Orange
@@ -149,29 +227,16 @@
                 <div contenteditable="true" data-placeholder="Person Responsible">${taskData ? taskData.person : ''}</div>
                 Description:
                 <div contenteditable="true" data-placeholder="Description">${taskData ? taskData.description : ''}</div>
-                
-                <center>
-                    <div class="button-container">
-                        <select class="color-select">
-                            <option value="">Select a color</option>
-                            ${pastelColors.map(color => `<option style="background-color: ${color};" value="${color}">${color}</option>`).join('')}
-                        </select>
-
-                        <button class="removeTaskBtn">Remove Task</button>
-                    </div>
-                </center>
             `;
 
-            // Attach the changeBoxColor event without inline handler
-            const colorSelect = box.querySelector('.color-select');
-            colorSelect.addEventListener('change', function() {
-                changeBoxColor(colorSelect, box); // Pass both select and box
-            });
-
-            box.querySelector('.removeTaskBtn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to remove this task?')) {
-                    box.remove();
-                }
+            // Add right-click context menu functionality
+            box.addEventListener('contextmenu', (e) => {
+                e.preventDefault(); // Prevent the default context menu from appearing
+                selectedBox = box; // Store the currently right-clicked box
+                const { clientX: mouseX, clientY: mouseY } = e; // Get mouse position
+                contextMenu.style.left = `${mouseX}px`;
+                contextMenu.style.top = `${mouseY}px`;
+                contextMenu.style.display = 'block'; // Show custom context menu
             });
 
             box.addEventListener('dragstart', () => {
@@ -181,6 +246,7 @@
             box.addEventListener('dragend', () => {
                 box.classList.remove('dragging');
             });
+
 
             columns.forEach(col => {
                 col.addEventListener('dragover', (e) => {
@@ -210,6 +276,47 @@
             box.style.borderColor = selectedColor; // Set the border color
         }
 
+        // MOVE UP
+        const move_up_button = document.getElementById('move-up');
+
+        move_up_button.addEventListener('click', () => {
+            const previousBox = selectedBox.previousElementSibling;
+            if (previousBox) {
+                selectedBox.parentNode.insertBefore(selectedBox, previousBox);
+            }
+        });
+
+        // MOVE DOWN
+        const move_down_button = document.getElementById('move-down');
+
+        move_down_button.addEventListener('click', () => {
+            const nextBox = selectedBox.nextElementSibling;
+            if (nextBox) {
+                selectedBox.parentNode.insertBefore(nextBox, selectedBox);
+            }
+        });
+
+        // Remove task from context menu
+        removeTaskBtnContext.addEventListener('click', () => {
+            if (confirm('Are you sure you want to remove this task?')) {
+                selectedBox.remove(); // Remove the selected task box
+                contextMenu.style.display = 'none'; // Hide context menu
+            }
+        });
+
+        // Change color from context menu
+        colorSelectContextMenu.addEventListener('change', function() {
+            changeBoxColor(colorSelectContextMenu, selectedBox); // Change the color of the selected box
+            contextMenu.style.display = 'none'; // Hide context menu after color selection
+        });
+
+        document.addEventListener('click', (event) => {
+            // Check if the clicked element is not the contextMenu
+            if (!contextMenu.contains(event.target)) {
+                contextMenu.style.display = 'none'; // Hide the custom context menu
+            }
+        });
+
         // Save and Load Tasks
 
         document.addEventListener('keydown', (e) => {
@@ -228,7 +335,7 @@
                 const name = box.querySelector('div[contenteditable="true"]').innerText;
                 const person = box.querySelectorAll('div[contenteditable="true"]')[1].innerText;
                 const description = box.querySelectorAll('div[contenteditable="true"]')[2].innerText;
-                const color = box.style.backgroundColor;
+                const color = box.style.borderColor;
                 
                 tasks.push({ name, person, description, column: box.parentNode.id, color });
             });
@@ -248,17 +355,14 @@
 
         dropArea.addEventListener('dragover', (e) => {
             e.preventDefault(); // Prevent default behavior (Prevent file from being opened)
-
         });
 
         dropArea.addEventListener('dragleave', (e) => {
-
+            // Optionally handle drag leave events if needed
         });
 
         dropArea.addEventListener('drop', (e) => {
             e.preventDefault();
-
-
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 const file = files[0];
@@ -287,6 +391,7 @@
                 changeBoxColor({ value: task.color }, box); // Set box color
             });
         }
+
 
     </script>
 </body>
