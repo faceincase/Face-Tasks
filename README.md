@@ -7,7 +7,7 @@ Lightweight tasks saving app.
 
 </div>
 
-# Version 1.2:
+# (OLD) Version 1.2:
 ![image](https://github.com/user-attachments/assets/9a9f34e6-2637-49f6-bb6d-87cec7c4d202)
 
 > RIGHT CLICK > Change colors, remove tasks or move them vertically.
